@@ -7,6 +7,7 @@
 </p>
 <hr/>
 
+
 # Foernuftig
 
 Let's make the Ikea Foernuftig air filter a little smarter. Here is the matching completely over-engineered firmware.
@@ -90,19 +91,34 @@ step 8: connect the StepDown +5V converter to 24V and GND and adjust them to +5V
 
 ## third step: wire up all the rest
 
-### +5V power supply
-+5V (StepDown converter) -> VCC ( ESP32 )<br>
-GND (StepDown converter) -> GND ( ESP32 )<br>
+### signal description
+
+* supply: +24V power supply control for the fan. high mean on and low means off
+* CLK: fan control signal, PWM with 50/50 duty cycle, 100Hz means 100rpm
+* FG: fan feedback signal: PWM with 50/50 duty cycle, 100Hz means 100rpm
+* LED: status LED, currently not working. need resistor change
+* switch pin 0..3: switch pin, cycles from 0001 to 1000. 4 stages
+
+### +24V to +5V power supply
++24V ( PCB ) -> IN+ ( StepDown converter )<br>
+GND ( PCB ) -> IN- ( StepDown converter )<br>
+
+and 
+
+OUT+ ( StepDown converter ) -> VCC ( ESP32 )<br>
+OUT- ( StepDown converter ) -> GND ( ESP32 )<br>
 ### fan control
-GPIO19 -> +24V (fan connector)<br>
-GPIO18 -> CLK ( IC U1 )<br>
-GPIO33 -> FG ( IC U1 )<br>
-GPIO35 -> LED ( IC U1 )<br>
+GPIO19 ( ESP32 ) -> supply ( IC U1 )<br>
+GPIO18 ( ESP32 ) -> CLK ( IC U1 )<br>
+GPIO33 ( ESP32 ) -> FG ( IC U1 )<br>
+GPIO35 ( ESP32 ) -> LED ( IC U1 )<br>
 ### 4 stage switch
-GPIO21 -> R7 ( PCB )<br>
-GPIO22 -> R6 ( PCB )<br>
-GPIO32 -> R5 ( PCB )<br>
-GPIO25 -> R4 ( PCB )<br>
+GPIO21 ( ESP32 ) -> switch pin 0 ( PCB )<br>
+GPIO22 ( ESP32 ) -> switch pin 1 ( PCB )<br>
+GPIO32 ( ESP32 ) -> switch pin 2 ( PCB )<br>
+GPIO25 ( ESP32 ) -> switch pin 3 ( PCB )<br>
+
+Reminder: All pins can also be changed later via web interface.
 
 ### the result:
 ![step 1](images/IMG_20230301_140955.jpg)
